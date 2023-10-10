@@ -1,12 +1,14 @@
 import "./style.css"
 import * as THREE from "three"
 import lights_toon_fragmentGlsl from "three/src/renderers/shaders/ShaderChunk/lights_toon_fragment.glsl.js";
+import {transformDirection} from "three/nodes";
 
 // Scene
 const scene = new THREE.Scene()
 
 // Create our sphere
-const geometry = new THREE.SphereGeometry(3, 64, 64)
+// const geometry = new THREE.SphereGeometry(3, 64, 64)
+const geometry = new THREE.TetrahedronGeometry(3, 2)
 const material = new THREE.MeshStandardMaterial({
     color: "#00ff83"
 })
@@ -21,7 +23,7 @@ const sizes = {
 
 
 //Light
-const light = new THREE.PointLight(0xffffff, 50,100)
+const light = new THREE.PointLight(0xffffff, 70,100)
 light.position.set(10,10,10)
 scene.add(light)
 
@@ -48,7 +50,19 @@ window.addEventListener('resize', ()=>{
     renderer.setSize(sizes.width, sizes.height)
 })
 
+let direction = 0.3
+function lightAnimation() {
+    if(light.position.x > 15) direction = -direction
+    if(light.position.x < -15) direction = -direction
+    light.position.x += direction
+}
+function shapeAnimation(shape) {
+    shape.rotation.x += 0.005
+    shape.rotation.y += 0.005
+}
 const loop = () => {
+    lightAnimation()
+    shapeAnimation(mesh)
     renderer.render(scene,camera)
     window.requestAnimationFrame(loop)
 }
